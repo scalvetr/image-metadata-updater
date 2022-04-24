@@ -21,24 +21,25 @@ func ProcessMetadata(albumInfo album.AlbumInfo, path string, info os.FileInfo) {
 func processJpg(albumInfo album.AlbumInfo, filepath string, info os.FileInfo) {
 	metadata := extractJpgMetadata(albumInfo, filepath, info)
 	var fileDateTime *time.Time
-	layout := "2006-01-02 15:04:05"
+	layout := "2006:01:02 15:04:05 -07"
 	for _, ifdEntry := range metadata {
 		fmt.Println(ifdEntry.TagName, ifdEntry.Value)
-		if ifdEntry.TagName == "DateTime" {
-			k, _ := time.Parse(layout, ifdEntry.ValueString)
-			fileDateTime = &k
+		valueStr, _ := ifdEntry.Value.(string)
 
+		if ifdEntry.TagName == "DateTime" {
+			k, _ := time.Parse(layout, valueStr+" +02")
+			fileDateTime = &k
 			break
 		}
 	}
 	if fileDateTime != nil {
 		fmt.Println("DateTime", fileDateTime)
+		err := os.Chtimes(filepath, *fileDateTime, *fileDateTime)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
-	/*err := os.Chtimes(filepath, currenttime, currenttime)
-	if err != nil {
-		fmt.Println(err)
-	}*/
 }
 
 func extractJpgMetadata(albumInfo album.AlbumInfo, filepath string, info os.FileInfo) []IfdEntry {
