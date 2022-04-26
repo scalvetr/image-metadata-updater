@@ -12,14 +12,22 @@ import (
 	"time"
 )
 
-func ProcessMetadata(albumInfo album.AlbumInfo, path string, info os.FileInfo) {
+func UpdateDateFromMetadata(albumInfo album.AlbumInfo, path string, info os.FileInfo) {
 	if strings.HasSuffix(strings.ToLower(path), ".jpg") ||
-		strings.HasSuffix(strings.ToLower(path), ".jpeg") {
+		strings.HasSuffix(strings.ToLower(path), ".jpeg") ||
+		strings.HasSuffix(strings.ToLower(path), ".gif") {
 		processJpg(albumInfo, path, info)
+	} else if strings.HasSuffix(strings.ToLower(path), ".mpg") ||
+		strings.HasSuffix(strings.ToLower(path), ".mpeg") {
+		processMpg(albumInfo, path, info)
 	}
 }
+
+func processMpg(info album.AlbumInfo, path string, info2 os.FileInfo) {
+
+}
 func processJpg(albumInfo album.AlbumInfo, filepath string, info os.FileInfo) {
-	metadata := extractJpgMetadata(albumInfo, filepath, info)
+	metadata := extractExifMetadata(albumInfo, filepath, info)
 	var fileDateTime *time.Time
 	layout := "2006:01:02 15:04:05 -07"
 	for _, ifdEntry := range metadata {
@@ -42,7 +50,7 @@ func processJpg(albumInfo album.AlbumInfo, filepath string, info os.FileInfo) {
 
 }
 
-func extractJpgMetadata(albumInfo album.AlbumInfo, filepath string, info os.FileInfo) []IfdEntry {
+func extractExifMetadata(albumInfo album.AlbumInfo, filepath string, info os.FileInfo) []IfdEntry {
 	f, err := os.Open(filepath)
 	log.PanicIf(err)
 	data, err := ioutil.ReadAll(f)

@@ -1,4 +1,4 @@
-module metadata
+module image-metadata-updater/metadata
 
 go 1.18
 
