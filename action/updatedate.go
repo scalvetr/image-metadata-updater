@@ -2,10 +2,7 @@ package action
 
 import (
 	"fmt"
-	album "image-metadata-updater/album"
 	"image-metadata-updater/config"
-	"io/fs"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -13,23 +10,10 @@ import (
 )
 
 func UpdateDate(config config.Config) {
-
-	files, err := ioutil.ReadDir(config.Path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var directories []fs.FileInfo
-	for _, file := range files {
-		if file.IsDir() {
-			directories = append(directories, file)
-		}
-	}
-
 	var fileDateTime *time.Time
-	layout := "2006-01-02T15:04:05Z-07"
+	layout := "2006-01-02T15:04:05Z07:00"
 	valueStr := config.Date
-	k, err := time.Parse(layout, valueStr+"Z+02")
+	k, err := time.Parse(layout, valueStr)
 
 	if err != nil {
 		log.Fatal(err)
@@ -37,21 +21,15 @@ func UpdateDate(config config.Config) {
 	fileDateTime = &k
 
 	fmt.Println("DateTime", fileDateTime)
-
-	for _, directory := range directories {
-		var info = album.ExtractAlbumInfo(directory)
-		fmt.Println(info.Year, info.Month, info.Name)
-		processFixedDate(config.Path, directory, fileDateTime)
-	}
+	processFixedDate(config.Path, fileDateTime)
 }
 
-func processFixedDate(basePath string, directory fs.FileInfo, fileDateTime *time.Time) {
-	filepath.Walk(filepath.Join(basePath, directory.Name()),
+func processFixedDate(basePath string, fileDateTime *time.Time) {
+	filepath.Walk(basePath,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-
 			err = os.Chtimes(path, *fileDateTime, *fileDateTime)
 			if err != nil {
 				fmt.Println(err)
