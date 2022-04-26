@@ -12,33 +12,14 @@ const (
 	UpdateDate
 )
 
-var ActionToString = map[Action]string{
-	UpdateDateFromMetadata: "UPDATE_DATE_FROM_METADATA",
-	UpdateDate:             "UPDATE_DATE",
-}
-
 var ActionFromString = map[string]Action{
 	"UPDATE_DATE_FROM_METADATA": UpdateDateFromMetadata,
 	"UPDATE_DATE":               UpdateDate,
 }
 
-func (a Action) String() string {
-	if s, ok := ActionToString[a]; ok {
-		return s
-	}
-	return "unknown"
-}
-
-func (a Action) MarshalYAML() ([]byte, error) {
-	if s, ok := ActionToString[a]; ok {
-		return yaml.Marshal(s)
-	}
-	return nil, fmt.Errorf("unknown user type %d", a)
-}
-
-func (a *Action) UnmarshalYAML(text []byte) error {
+func (a *Action) UnmarshalYAML(value *yaml.Node) error {
 	var s string
-	if err := yaml.Unmarshal(text, &s); err != nil {
+	if err := value.Decode(&s); err != nil {
 		return err
 	}
 	var v Action
