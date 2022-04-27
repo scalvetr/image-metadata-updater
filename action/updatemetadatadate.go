@@ -22,10 +22,10 @@ func UpdateMetadataDate(config config.Config) {
 	fileDateTime = &k
 
 	fmt.Println("DateTime", fileDateTime)
-	processFixedDate(config.Path, fileDateTime)
+	processUpdateMetadataDate(config.Path, fileDateTime)
 }
 
-func processFixedDate(basePath string, fileDateTime *time.Time) {
+func processUpdateMetadataDate(basePath string, fileDateTime *time.Time) {
 	filepath.Walk(basePath,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {

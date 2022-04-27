@@ -21,6 +21,7 @@ func updateMetadataDateJpg(filepath string, info os.FileInfo, fileDateTime *time
 	if existingFileDateTime != nil {
 		fmt.Println("Current DateTime", existingFileDateTime)
 	}
+	// TODO update the metadata
 	err := os.Chtimes(filepath, *fileDateTime, *fileDateTime)
 	if err != nil {
 		fmt.Println(err)
