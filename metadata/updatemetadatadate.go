@@ -22,7 +22,7 @@ func updateMetadataDateJpg(filepath string, info os.FileInfo, fileDateTime *time
 	if existingFileDateTime != nil {
 		fmt.Println("      existingDateTime: ", existingFileDateTime)
 	}
-	// TODO update the metadata
+	setExifMetadataDate(filepath, *fileDateTime)
 	err := os.Chtimes(filepath, *fileDateTime, *fileDateTime)
 	if err != nil {
 		fmt.Println(err)
