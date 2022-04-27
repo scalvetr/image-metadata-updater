@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gopkg.in/yaml.v3"
 	a "image-metadata-updater/action"
 	c "image-metadata-updater/config"
@@ -25,6 +26,7 @@ func main() {
 	configs := readConfig()
 
 	for _, config := range configs {
+		fmt.Println("------------------------------")
 		if config.Action == c.UpdateDateFromMetadata {
 			a.UpdateDateFromMetadata(config)
 		} else if config.Action == c.UpdateMetadataDate {
@@ -33,5 +35,6 @@ func main() {
 			a.UploadAlbums(config)
 		}
 	}
+	fmt.Println("------------------------------")
 
 }

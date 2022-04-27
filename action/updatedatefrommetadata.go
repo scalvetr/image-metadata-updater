@@ -12,6 +12,8 @@ import (
 )
 
 func UpdateDateFromMetadata(config config.Config) {
+	fmt.Println("[INIT] UpdateDateFromMetadata")
+	fmt.Println("path: ", config.Path)
 
 	files, err := ioutil.ReadDir(config.Path)
 	if err != nil {
@@ -29,6 +31,7 @@ func UpdateDateFromMetadata(config config.Config) {
 		fmt.Println(directory.Name())
 		processMetadata(config.Path, directory)
 	}
+	fmt.Println("[Finish] UpdateDateFromMetadata")
 }
 
 func processMetadata(basePath string, directory fs.FileInfo) {

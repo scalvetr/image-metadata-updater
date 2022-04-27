@@ -12,6 +12,8 @@ import (
 )
 
 func UploadAlbums(config config.Config) {
+	fmt.Println("[INIT] UploadAlbums")
+	fmt.Println("path: ", config.Path)
 
 	files, err := ioutil.ReadDir(config.Path)
 	if err != nil {
@@ -30,6 +32,7 @@ func UploadAlbums(config config.Config) {
 		fmt.Println(info.Year, info.Month, info.Name)
 		uploadAlbum(config.Path, directory, info)
 	}
+	fmt.Println("[Finish] UploadAlbums")
 }
 
 func uploadAlbum(basePath string, directory fs.FileInfo, albumInfo album.AlbumInfo) {

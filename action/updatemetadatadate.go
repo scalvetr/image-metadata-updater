@@ -11,6 +11,10 @@ import (
 )
 
 func UpdateMetadataDate(config config.Config) {
+	fmt.Println("[INIT] UpdateMetadataDate")
+	fmt.Println("path: ", config.Path)
+	fmt.Println("date: ", config.Date)
+
 	var fileDateTime *time.Time
 	layout := "2006-01-02T15:04:05Z07:00"
 	valueStr := config.Date
@@ -20,9 +24,8 @@ func UpdateMetadataDate(config config.Config) {
 		log.Fatal(err)
 	}
 	fileDateTime = &k
-
-	fmt.Println("DateTime", fileDateTime)
 	processUpdateMetadataDate(config.Path, fileDateTime)
+	fmt.Println("[Finish] UpdateMetadataDate")
 }
 
 func processUpdateMetadataDate(basePath string, fileDateTime *time.Time) {
