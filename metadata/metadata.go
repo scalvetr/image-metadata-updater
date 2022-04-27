@@ -17,8 +17,10 @@ func extractExifMetadata(filepath string, info os.FileInfo) []IfdEntry {
 	log.PanicIf(err)
 	rawExif, err := exif.SearchAndExtractExif(data)
 	if err != nil {
+		fmt.Println("      exifMetadata: nil")
 		return nil
 	}
+	fmt.Println("      exifMetadata: found")
 
 	im, err := exifcommon.NewIfdMappingWithStandard()
 	log.PanicIf(err)

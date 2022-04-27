@@ -16,10 +16,11 @@ func UpdateMetadataDate(path string, info os.FileInfo, fileDateTime *time.Time) 
 }
 
 func updateMetadataDateJpg(filepath string, info os.FileInfo, fileDateTime *time.Time) {
+	fmt.Println("    - file: ", filepath)
 	var existingFileDateTime = extractExifMetadataDate(filepath, info)
-	fmt.Println("New DateTime", fileDateTime)
+	fmt.Println("      newDateTime: ", fileDateTime)
 	if existingFileDateTime != nil {
-		fmt.Println("Current DateTime", existingFileDateTime)
+		fmt.Println("      existingDateTime: ", existingFileDateTime)
 	}
 	// TODO update the metadata
 	err := os.Chtimes(filepath, *fileDateTime, *fileDateTime)

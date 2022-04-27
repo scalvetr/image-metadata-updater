@@ -21,9 +21,10 @@ func updateDateFromMetadataMpg(path string, info2 os.FileInfo) {
 
 }
 func updateDateFromMetadataJpg(filepath string, info os.FileInfo) {
+	fmt.Println("    - file: ", filepath)
 	var fileDateTime = extractExifMetadataDate(filepath, info)
 	if fileDateTime != nil {
-		fmt.Println("DateTime", fileDateTime)
+		fmt.Println("      dateTime: ", fileDateTime)
 		err := os.Chtimes(filepath, *fileDateTime, *fileDateTime)
 		if err != nil {
 			fmt.Println(err)
