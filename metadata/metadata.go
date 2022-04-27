@@ -5,52 +5,12 @@ import (
 	"github.com/dsoprea/go-exif/v3"
 	exifcommon "github.com/dsoprea/go-exif/v3/common"
 	"github.com/dsoprea/go-logging"
-	album "image-metadata-updater/album"
 	"io/ioutil"
 	"os"
-	"strings"
 	"time"
 )
 
-func UpdateDateFromMetadata(albumInfo album.AlbumInfo, path string, info os.FileInfo) {
-	if strings.HasSuffix(strings.ToLower(path), ".jpg") ||
-		strings.HasSuffix(strings.ToLower(path), ".jpeg") ||
-		strings.HasSuffix(strings.ToLower(path), ".gif") {
-		processJpg(albumInfo, path, info)
-	} else if strings.HasSuffix(strings.ToLower(path), ".mpg") ||
-		strings.HasSuffix(strings.ToLower(path), ".mpeg") {
-		processMpg(albumInfo, path, info)
-	}
-}
-
-func processMpg(info album.AlbumInfo, path string, info2 os.FileInfo) {
-
-}
-func processJpg(albumInfo album.AlbumInfo, filepath string, info os.FileInfo) {
-	metadata := extractExifMetadata(albumInfo, filepath, info)
-	var fileDateTime *time.Time
-	layout := "2006:01:02 15:04:05 -07"
-	for _, ifdEntry := range metadata {
-		fmt.Println(ifdEntry.TagName, ifdEntry.Value)
-		valueStr, _ := ifdEntry.Value.(string)
-
-		if ifdEntry.TagName == "DateTime" {
-			k, _ := time.Parse(layout, valueStr+" +02")
-			fileDateTime = &k
-			break
-		}
-	}
-	if fileDateTime != nil {
-		fmt.Println("DateTime", fileDateTime)
-		err := os.Chtimes(filepath, *fileDateTime, *fileDateTime)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-
-}
-
-func extractExifMetadata(albumInfo album.AlbumInfo, filepath string, info os.FileInfo) []IfdEntry {
+func extractExifMetadata(filepath string, info os.FileInfo) []IfdEntry {
 	f, err := os.Open(filepath)
 	log.PanicIf(err)
 	data, err := ioutil.ReadAll(f)
@@ -89,7 +49,23 @@ func extractExifMetadata(albumInfo album.AlbumInfo, filepath string, info os.Fil
 		entries = append(entries, entry)
 	}
 	return entries
+}
 
+func extractExifMetadataDate(filepath string, info os.FileInfo) *time.Time {
+	metadata := extractExifMetadata(filepath, info)
+	var fileDateTime *time.Time
+	layout := "2006:01:02 15:04:05 -07"
+	for _, ifdEntry := range metadata {
+		fmt.Println(ifdEntry.TagName, ifdEntry.Value)
+		valueStr, _ := ifdEntry.Value.(string)
+
+		if ifdEntry.TagName == "DateTime" {
+			k, _ := time.Parse(layout, valueStr+" +02")
+			fileDateTime = &k
+			break
+		}
+	}
+	return fileDateTime
 }
 
 type IfdEntry struct {

@@ -8,13 +8,17 @@ import (
 type Action uint
 
 const (
-	UpdateDateFromMetadata Action = iota
-	UpdateDate
+	Undefined Action = iota
+	UpdateDateFromMetadata
+	UpdateMetadataDate
+	UploadAlbums
 )
 
 var ActionFromString = map[string]Action{
+	"UNDEFINED":                 Undefined,
 	"UPDATE_DATE_FROM_METADATA": UpdateDateFromMetadata,
-	"UPDATE_DATE":               UpdateDate,
+	"UPDATE_METADATA_DATE":      UpdateMetadataDate,
+	"UPLOAD_ALBUMS":             UploadAlbums,
 }
 
 func (a *Action) UnmarshalYAML(value *yaml.Node) error {

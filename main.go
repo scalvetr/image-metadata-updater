@@ -27,8 +27,10 @@ func main() {
 	for _, config := range configs {
 		if config.Action == c.UpdateDateFromMetadata {
 			a.UpdateDateFromMetadata(config)
-		} else if config.Action == c.UpdateDate {
-			a.UpdateDate(config)
+		} else if config.Action == c.UpdateMetadataDate {
+			a.UpdateMetadataDate(config)
+		} else if config.Action == c.UploadAlbums {
+			a.UploadAlbums(config)
 		}
 	}
 

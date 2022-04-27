@@ -2,8 +2,8 @@ package action
 
 import (
 	"fmt"
+	album "image-metadata-updater/album"
 	"image-metadata-updater/config"
-	"image-metadata-updater/metadata"
 	"io/fs"
 	"io/ioutil"
 	"log"
@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 )
 
-func UpdateDateFromMetadata(config config.Config) {
+func UploadAlbums(config config.Config) {
 
 	files, err := ioutil.ReadDir(config.Path)
 	if err != nil {
@@ -26,18 +26,19 @@ func UpdateDateFromMetadata(config config.Config) {
 	}
 
 	for _, directory := range directories {
-		fmt.Println(directory.Name())
-		processMetadata(config.Path, directory)
+		var info = album.ExtractAlbumInfo(directory)
+		fmt.Println(info.Year, info.Month, info.Name)
+		uploadAlbum(config.Path, directory, info)
 	}
 }
 
-func processMetadata(basePath string, directory fs.FileInfo) {
+func uploadAlbum(basePath string, directory fs.FileInfo, albumInfo album.AlbumInfo) {
 	filepath.Walk(filepath.Join(basePath, directory.Name()),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			metadata.UpdateDateFromMetadata(path, info)
+			fmt.Println(albumInfo.Name, path)
 			return nil
 		})
 }

@@ -3,13 +3,14 @@ package action
 import (
 	"fmt"
 	"image-metadata-updater/config"
+	"image-metadata-updater/metadata"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
 )
 
-func UpdateDate(config config.Config) {
+func UpdateMetadataDate(config config.Config) {
 	var fileDateTime *time.Time
 	layout := "2006-01-02T15:04:05Z07:00"
 	valueStr := config.Date
@@ -30,10 +31,7 @@ func processFixedDate(basePath string, fileDateTime *time.Time) {
 			if err != nil {
 				return err
 			}
-			err = os.Chtimes(path, *fileDateTime, *fileDateTime)
-			if err != nil {
-				fmt.Println(err)
-			}
+			metadata.UpdateMetadataDate(path, info, fileDateTime)
 			return nil
 		})
 }
