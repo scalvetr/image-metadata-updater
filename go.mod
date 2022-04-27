@@ -22,6 +22,7 @@ require (
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	image-metadata-updater/album v0.0.0 // indirect
 	image-metadata-updater/metadata v0.0.0 // indirect
+	image-metadata-updater/uploader v0.0.0 // indirect
 )
 
 replace (

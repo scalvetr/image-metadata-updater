@@ -4,6 +4,7 @@ import (
 	"fmt"
 	album "image-metadata-updater/album"
 	"image-metadata-updater/config"
+	uploader "image-metadata-updater/uploader"
 	"io/fs"
 	"io/ioutil"
 	"log"
@@ -36,12 +37,15 @@ func UploadAlbums(config config.Config) {
 }
 
 func uploadAlbum(basePath string, directory fs.FileInfo, albumInfo album.AlbumInfo) {
+	uploader.CreateAlbum(albumInfo)
 	filepath.Walk(filepath.Join(basePath, directory.Name()),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			fmt.Println(albumInfo.Name, path)
+			if !info.IsDir() {
+				uploader.UploadFile(albumInfo, path)
+			}
 			return nil
 		})
 }
