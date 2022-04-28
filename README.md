@@ -1,4 +1,4 @@
-# image-metadata-updater
+# photo-manager-cli
 
 
 ## Build
