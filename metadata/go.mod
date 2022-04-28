@@ -1,4 +1,4 @@
-module image-metadata-updater/metadata
+module photo-manager-cli/metadata
 
 go 1.18
 

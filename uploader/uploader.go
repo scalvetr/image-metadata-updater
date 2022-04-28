@@ -7,8 +7,8 @@ import (
 	"github.com/gphotosuploader/google-photos-api-client-go/v2/albums"
 	"github.com/gphotosuploader/google-photos-api-client-go/v2/media_items"
 	"golang.org/x/oauth2"
-	a "image-metadata-updater/album"
-	c "image-metadata-updater/config"
+	a "photo-manager-cli/album"
+	c "photo-manager-cli/config"
 )
 
 type Uploader struct {

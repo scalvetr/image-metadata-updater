@@ -2,11 +2,11 @@ package action
 
 import (
 	"fmt"
-	"image-metadata-updater/config"
-	"image-metadata-updater/metadata"
 	"log"
 	"os"
 	"path/filepath"
+	"photo-manager-cli/config"
+	"photo-manager-cli/metadata"
 	"time"
 )
 

@@ -1,17 +1,17 @@
-module image-metadata-updater/action
+module photo-manager-cli/action
 
 go 1.18
 
 require (
-	image-metadata-updater/album v0.0.0
-	image-metadata-updater/config v0.0.0
-	image-metadata-updater/metadata v0.0.0
-	image-metadata-updater/uploader v0.0.0
+	photo-manager-cli/album v0.0.0
+	photo-manager-cli/config v0.0.0
+	photo-manager-cli/metadata v0.0.0
+	photo-manager-cli/uploader v0.0.0
 )
 
 replace (
-	image-metadata-updater/album v0.0.0 => ../album
-	image-metadata-updater/config v0.0.0 => ../config
-	image-metadata-updater/metadata v0.0.0 => ../metadata
-	image-metadata-updater/uploader v0.0.0 => ../uploader
+	photo-manager-cli/album v0.0.0 => ../album
+	photo-manager-cli/config v0.0.0 => ../config
+	photo-manager-cli/metadata v0.0.0 => ../metadata
+	photo-manager-cli/uploader v0.0.0 => ../uploader
 )

@@ -1,4 +1,4 @@
 /config.yaml*
 /.idea/
-/image-metadata-updater
+/photo-manager-cli
 *.iml

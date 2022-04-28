@@ -2,13 +2,13 @@ package action
 
 import (
 	"fmt"
-	"image-metadata-updater/config"
-	"image-metadata-updater/metadata"
 	"io/fs"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"photo-manager-cli/config"
+	"photo-manager-cli/metadata"
 )
 
 func UpdateDateFromMetadata(config config.Config) {

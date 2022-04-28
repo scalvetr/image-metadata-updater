@@ -23,6 +23,6 @@ Create a configuration file:
 ```
 Run 
 ```shell
-./image-metadata-updater
+./photo-manager-cli
 
 ````

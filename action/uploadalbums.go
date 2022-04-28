@@ -2,14 +2,14 @@ package action
 
 import (
 	"fmt"
-	a "image-metadata-updater/album"
-	c "image-metadata-updater/config"
-	u "image-metadata-updater/uploader"
 	"io/fs"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	a "photo-manager-cli/album"
+	c "photo-manager-cli/config"
+	u "photo-manager-cli/uploader"
 )
 
 func UploadAlbums(config c.Config) {

@@ -1,11 +1,11 @@
-module image-metadata-updater
+module photo-manager-cli
 
 go 1.18
 
 require (
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
-	image-metadata-updater/action v0.0.0
-	image-metadata-updater/config v0.0.0
+	photo-manager-cli/action v0.0.0
+	photo-manager-cli/config v0.0.0
 )
 
 require (
@@ -20,15 +20,15 @@ require (
 	github.com/golang/geo v0.0.0-20200319012246-673a6f80352d // indirect
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
-	image-metadata-updater/album v0.0.0 // indirect
-	image-metadata-updater/metadata v0.0.0 // indirect
-	image-metadata-updater/uploader v0.0.0 // indirect
+	photo-manager-cli/album v0.0.0 // indirect
+	photo-manager-cli/metadata v0.0.0 // indirect
+	photo-manager-cli/uploader v0.0.0 // indirect
 )
 
 replace (
-	image-metadata-updater/action v0.0.0 => ./action
-	image-metadata-updater/album v0.0.0 => ./album
-	image-metadata-updater/config v0.0.0 => ./config
-	image-metadata-updater/metadata v0.0.0 => ./metadata
-	image-metadata-updater/uploader v0.0.0 => ./uploader
+	photo-manager-cli/action v0.0.0 => ./action
+	photo-manager-cli/album v0.0.0 => ./album
+	photo-manager-cli/config v0.0.0 => ./config
+	photo-manager-cli/metadata v0.0.0 => ./metadata
+	photo-manager-cli/uploader v0.0.0 => ./uploader
 )

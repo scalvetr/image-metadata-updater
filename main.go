@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"gopkg.in/yaml.v3"
-	a "image-metadata-updater/action"
-	c "image-metadata-updater/config"
 	"io/ioutil"
 	"log"
+	a "photo-manager-cli/action"
+	c "photo-manager-cli/config"
 )
 
 func readConfig() []c.Config {
