@@ -2,9 +2,9 @@ package action
 
 import (
 	"fmt"
-	album "image-metadata-updater/album"
-	"image-metadata-updater/config"
-	uploader "image-metadata-updater/uploader"
+	a "image-metadata-updater/album"
+	c "image-metadata-updater/config"
+	u "image-metadata-updater/uploader"
 	"io/fs"
 	"io/ioutil"
 	"log"
@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 )
 
-func UploadAlbums(config config.Config) {
+func UploadAlbums(config c.Config) {
 	fmt.Println("[INIT] UploadAlbums")
 	fmt.Println("path: ", config.Path)
 
@@ -28,23 +28,31 @@ func UploadAlbums(config config.Config) {
 		}
 	}
 
+	u, err := u.CreateUploader(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for _, directory := range directories {
-		var info = album.ExtractAlbumInfo(directory)
+		var info = a.ExtractAlbumInfo(directory)
 		fmt.Println(info.Year, info.Month, info.Name)
-		uploadAlbum(config.Path, directory, info)
+		uploadAlbum(config.Path, directory, info, *u)
 	}
 	fmt.Println("[Finish] UploadAlbums")
 }
 
-func uploadAlbum(basePath string, directory fs.FileInfo, albumInfo album.AlbumInfo) {
-	uploader.CreateAlbum(albumInfo)
+func uploadAlbum(basePath string, directory fs.FileInfo, albumInfo a.AlbumInfo, uploader u.Uploader) {
+	albumId, err := uploader.CreateAlbum(albumInfo)
+	if err != nil {
+		log.Fatal(err)
+	}
 	filepath.Walk(filepath.Join(basePath, directory.Name()),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
 			if !info.IsDir() {
-				uploader.UploadFile(albumInfo, path)
+				uploader.UploadFile(path, albumId)
 			}
 			return nil
 		})

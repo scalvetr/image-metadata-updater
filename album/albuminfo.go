@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/fs"
 	"strings"
 )
@@ -11,6 +12,9 @@ type AlbumInfo struct {
 	Month string
 }
 
+func (a AlbumInfo) GetName() string {
+	return fmt.Sprintf("%s-%s - %s", a.Year, a.Month, a.Name)
+}
 func ExtractAlbumInfo(directory fs.FileInfo) AlbumInfo {
 	name := directory.Name()
 	nameArr := strings.Split(name, "-")
