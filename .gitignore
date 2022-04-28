@@ -2,3 +2,4 @@
 /.idea/
 /photo-manager-cli
 *.iml
+/google_client.json

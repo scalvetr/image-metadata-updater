@@ -36,14 +36,7 @@ func (a *Action) UnmarshalYAML(value *yaml.Node) error {
 }
 
 type Config struct {
-	Action    Action    `yaml:"action" `
-	Path      string    `yaml:"path"`
-	Date      string    `yaml:"date"`
-	GoogleApi GoogleApi `yaml:"google_api"`
-}
-
-type GoogleApi struct {
-	ClientID     string `yaml:"client_id"`
-	ClientSecret string `yaml:"client_secret"`
-	Token        string `yaml:"token"`
+	Action Action `yaml:"action" `
+	Path   string `yaml:"path"`
+	Date   string `yaml:"date"`
 }
