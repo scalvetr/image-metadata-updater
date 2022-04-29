@@ -42,6 +42,11 @@ type Config struct {
 }
 
 type UpdateMetadataDateConfig struct {
-	Date     string `yaml:"date"`
-	Override bool   `yaml:"override"`
+	Date     string                            `yaml:"date"`
+	Override bool                              `yaml:"override"`
+	Replace  []UpdateMetadataDateConfigReplace `yaml:"replace"`
+}
+type UpdateMetadataDateConfigReplace struct {
+	Day    string `yaml:"day"`
+	NewDay string `yaml:"new_day"`
 }

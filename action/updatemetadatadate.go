@@ -16,25 +16,33 @@ func UpdateMetadataDate(config config.Config) {
 	fmt.Println("date: ", config.UpdateMetadataDateConfig.Date)
 	fmt.Println("override: ", config.UpdateMetadataDateConfig.Override)
 
-	var fileDateTime *time.Time
-	layout := "2006-01-02T15:04:05Z07:00"
-	valueStr := config.UpdateMetadataDateConfig.Date
-	k, err := time.Parse(layout, valueStr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fileDateTime = &k
-	processUpdateMetadataDate(config.Path, fileDateTime, config.UpdateMetadataDateConfig.Override)
+	processUpdateMetadataDate(config.Path, config.UpdateMetadataDateConfig)
 	fmt.Println("[Finish] UpdateMetadataDate")
 }
 
-func processUpdateMetadataDate(basePath string, fileDateTime *time.Time, override bool) {
+func processUpdateMetadataDate(basePath string, config config.UpdateMetadataDateConfig) {
+	valueStr := config.Date
+	override := config.Override
+	var fileDateTime *time.Time
+	if valueStr != "" {
+		layout := "2006-01-02T15:04:05Z07:00"
+		k, err := time.Parse(layout, valueStr)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fileDateTime = &k
+	}
+	replaces := make(map[string]string)
+	for _, replace := range config.Replace {
+		replaces[replace.Day] = replace.NewDay
+	}
+
 	filepath.Walk(basePath,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			metadata.UpdateMetadataDate(path, info, fileDateTime, override)
+			metadata.UpdateMetadataDate(path, info, fileDateTime, override, replaces)
 			return nil
 		})
 }
