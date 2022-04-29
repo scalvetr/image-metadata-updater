@@ -43,3 +43,16 @@ Accepts 3 kind of actions:
 ./photo-manager-cli
 
 ````
+
+# Videos
+
+Videos are not supported for now, so we suggest using an alternate method. For instance `exiftool`.
+
+```shell
+brew install exiftool
+cd ~/Pictures/fix/2006\ -\ 05\ Maig\ -\ Final\ Champions
+# check the dates
+exiftool -a -G1 MOV00342.MPG
+# update
+exiftool -AllDates="2005:05:16 14:00:00" MOV00342.MPG
+```
