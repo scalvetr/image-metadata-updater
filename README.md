@@ -17,9 +17,16 @@ The file consists on a list of actions to be performed.
 
 Create a configuration file:
 ```yaml
-- action: "UPDATE_METADATA_DATE"
+- action: "UPDATE_METADATA"
   path: "/Users/scalvetr/Pictures/upload/2002 - 12 Desembre - Canaries"
-  date: "2002-12-30T14:00:00+02:00"
+  update_metadata_config:
+    date: "2005-05-17T14:00:00+01:00"
+    override: false
+    replace:
+      - day: "2005-04-03"
+        new_day: "2006-05-16"
+      - day: "2005-04-04"
+        new_day: "2006-05-17"
 - action: "UPDATE_DATE_FROM_METADATA"
   path: "/Users/scalvetr/Pictures/upload"
 - action: "UPLOAD_ALBUMS"

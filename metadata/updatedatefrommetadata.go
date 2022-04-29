@@ -17,8 +17,7 @@ func UpdateDateFromMetadata(path string, info os.FileInfo) {
 	}
 }
 
-func updateDateFromMetadataMpg(path string) {
-
+func updateDateFromMetadataMpg(filepath string) {
 }
 func updateDateFromMetadataJpg(filepath string) {
 	fmt.Println("    - file: ", filepath)

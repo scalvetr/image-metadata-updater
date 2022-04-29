@@ -13,7 +13,13 @@ func UpdateMetadataDate(path string, info os.FileInfo, fileDateTime *time.Time, 
 		strings.HasSuffix(strings.ToLower(path), ".jpeg") ||
 		strings.HasSuffix(strings.ToLower(path), ".gif") {
 		updateMetadataDateJpg(path, fileDateTime, override, replaces)
+	} else if !info.IsDir() && strings.HasSuffix(strings.ToLower(path), ".mpg") ||
+		strings.HasSuffix(strings.ToLower(path), ".mpeg") {
+		updateMetadataDateMpeg(path, fileDateTime, override, replaces)
 	}
+}
+func updateMetadataDateMpeg(filepath string, fileDateTime *time.Time, override bool, replaces map[string]string) {
+
 }
 
 func updateMetadataDateJpg(filepath string, fileDateTime *time.Time, override bool, replaces map[string]string) {

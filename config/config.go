@@ -10,14 +10,14 @@ type Action uint
 const (
 	Undefined Action = iota
 	UpdateDateFromMetadata
-	UpdateMetadataDate
+	UpdateMetadata
 	UploadAlbums
 )
 
 var ActionFromString = map[string]Action{
 	"UNDEFINED":                 Undefined,
 	"UPDATE_DATE_FROM_METADATA": UpdateDateFromMetadata,
-	"UPDATE_METADATA_DATE":      UpdateMetadataDate,
+	"UPDATE_METADATA":           UpdateMetadata,
 	"UPLOAD_ALBUMS":             UploadAlbums,
 }
 
@@ -36,12 +36,12 @@ func (a *Action) UnmarshalYAML(value *yaml.Node) error {
 }
 
 type Config struct {
-	Action                   Action                   `yaml:"action" `
-	Path                     string                   `yaml:"path"`
-	UpdateMetadataDateConfig UpdateMetadataDateConfig `yaml:"update_metadata_date_config"`
+	Action                   Action               `yaml:"action" `
+	Path                     string               `yaml:"path"`
+	UpdateMetadataDateConfig UpdateMetadataConfig `yaml:"update_metadata_config"`
 }
 
-type UpdateMetadataDateConfig struct {
+type UpdateMetadataConfig struct {
 	Date     string                            `yaml:"date"`
 	Override bool                              `yaml:"override"`
 	Replace  []UpdateMetadataDateConfigReplace `yaml:"replace"`

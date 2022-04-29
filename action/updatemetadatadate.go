@@ -11,16 +11,16 @@ import (
 )
 
 func UpdateMetadataDate(config config.Config) {
-	fmt.Println("[INIT] UpdateMetadataDate")
+	fmt.Println("[INIT] UpdateMetadata")
 	fmt.Println("path: ", config.Path)
 	fmt.Println("date: ", config.UpdateMetadataDateConfig.Date)
 	fmt.Println("override: ", config.UpdateMetadataDateConfig.Override)
 
 	processUpdateMetadataDate(config.Path, config.UpdateMetadataDateConfig)
-	fmt.Println("[Finish] UpdateMetadataDate")
+	fmt.Println("[Finish] UpdateMetadata")
 }
 
-func processUpdateMetadataDate(basePath string, config config.UpdateMetadataDateConfig) {
+func processUpdateMetadataDate(basePath string, config config.UpdateMetadataConfig) {
 	valueStr := config.Date
 	override := config.Override
 	var fileDateTime *time.Time

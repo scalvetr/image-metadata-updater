@@ -29,7 +29,7 @@ func main() {
 		fmt.Println("------------------------------")
 		if config.Action == c.UpdateDateFromMetadata {
 			a.UpdateDateFromMetadata(config)
-		} else if config.Action == c.UpdateMetadataDate {
+		} else if config.Action == c.UpdateMetadata {
 			a.UpdateMetadataDate(config)
 		} else if config.Action == c.UploadAlbums {
 			a.UploadAlbums(config)
