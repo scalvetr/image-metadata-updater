@@ -7,22 +7,22 @@ import (
 )
 
 func UpdateDateFromMetadata(path string, info os.FileInfo) {
-	if strings.HasSuffix(strings.ToLower(path), ".jpg") ||
+	if !info.IsDir() && strings.HasSuffix(strings.ToLower(path), ".jpg") ||
 		strings.HasSuffix(strings.ToLower(path), ".jpeg") ||
 		strings.HasSuffix(strings.ToLower(path), ".gif") {
-		updateDateFromMetadataJpg(path, info)
-	} else if strings.HasSuffix(strings.ToLower(path), ".mpg") ||
+		updateDateFromMetadataJpg(path)
+	} else if !info.IsDir() && strings.HasSuffix(strings.ToLower(path), ".mpg") ||
 		strings.HasSuffix(strings.ToLower(path), ".mpeg") {
-		updateDateFromMetadataMpg(path, info)
+		updateDateFromMetadataMpg(path)
 	}
 }
 
-func updateDateFromMetadataMpg(path string, info2 os.FileInfo) {
+func updateDateFromMetadataMpg(path string) {
 
 }
-func updateDateFromMetadataJpg(filepath string, info os.FileInfo) {
+func updateDateFromMetadataJpg(filepath string) {
 	fmt.Println("    - file: ", filepath)
-	var fileDateTime = extractExifMetadataDate(filepath, info)
+	var fileDateTime = extractExifMetadataDate(filepath)
 	if fileDateTime != nil {
 		fmt.Println("      dateTime: ", fileDateTime)
 		err := os.Chtimes(filepath, *fileDateTime, *fileDateTime)

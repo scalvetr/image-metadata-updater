@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func extractExifMetadata(filepath string, info os.FileInfo) []IfdEntry {
+func extractExifMetadata(filepath string) []IfdEntry {
 	f, err := os.Open(filepath)
 	log.PanicIf(err)
 	data, err := ioutil.ReadAll(f)
@@ -55,8 +55,8 @@ func extractExifMetadata(filepath string, info os.FileInfo) []IfdEntry {
 	return entries
 }
 
-func extractExifMetadataDate(filepath string, info os.FileInfo) *time.Time {
-	metadata := extractExifMetadata(filepath, info)
+func extractExifMetadataDate(filepath string) *time.Time {
+	metadata := extractExifMetadata(filepath)
 	var fileDateTime *time.Time
 	layout := "2006:01:02 15:04:05 -07"
 	for _, ifdEntry := range metadata {

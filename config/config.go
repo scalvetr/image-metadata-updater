@@ -36,7 +36,12 @@ func (a *Action) UnmarshalYAML(value *yaml.Node) error {
 }
 
 type Config struct {
-	Action Action `yaml:"action" `
-	Path   string `yaml:"path"`
-	Date   string `yaml:"date"`
+	Action                   Action                   `yaml:"action" `
+	Path                     string                   `yaml:"path"`
+	UpdateMetadataDateConfig UpdateMetadataDateConfig `yaml:"update_metadata_date_config"`
+}
+
+type UpdateMetadataDateConfig struct {
+	Date     string `yaml:"date"`
+	Override bool   `yaml:"override"`
 }

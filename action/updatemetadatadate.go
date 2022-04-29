@@ -13,28 +13,28 @@ import (
 func UpdateMetadataDate(config config.Config) {
 	fmt.Println("[INIT] UpdateMetadataDate")
 	fmt.Println("path: ", config.Path)
-	fmt.Println("date: ", config.Date)
+	fmt.Println("date: ", config.UpdateMetadataDateConfig.Date)
+	fmt.Println("override: ", config.UpdateMetadataDateConfig.Override)
 
 	var fileDateTime *time.Time
 	layout := "2006-01-02T15:04:05Z07:00"
-	valueStr := config.Date
+	valueStr := config.UpdateMetadataDateConfig.Date
 	k, err := time.Parse(layout, valueStr)
-
 	if err != nil {
 		log.Fatal(err)
 	}
 	fileDateTime = &k
-	processUpdateMetadataDate(config.Path, fileDateTime)
+	processUpdateMetadataDate(config.Path, fileDateTime, config.UpdateMetadataDateConfig.Override)
 	fmt.Println("[Finish] UpdateMetadataDate")
 }
 
-func processUpdateMetadataDate(basePath string, fileDateTime *time.Time) {
+func processUpdateMetadataDate(basePath string, fileDateTime *time.Time, override bool) {
 	filepath.Walk(basePath,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			metadata.UpdateMetadataDate(path, info, fileDateTime)
+			metadata.UpdateMetadataDate(path, info, fileDateTime, override)
 			return nil
 		})
 }
