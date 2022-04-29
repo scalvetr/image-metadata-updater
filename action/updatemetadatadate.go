@@ -7,20 +7,22 @@ import (
 	"path/filepath"
 	"photo-manager-cli/config"
 	"photo-manager-cli/metadata"
+	"regexp"
 	"time"
 )
 
 func UpdateMetadataDate(config config.Config) {
 	fmt.Println("[INIT] UpdateMetadata")
 	fmt.Println("path: ", config.Path)
+	fmt.Println("regexp: ", config.Regexp)
 	fmt.Println("date: ", config.UpdateMetadataDateConfig.Date)
 	fmt.Println("override: ", config.UpdateMetadataDateConfig.Override)
 
-	processUpdateMetadataDate(config.Path, config.UpdateMetadataDateConfig)
+	processUpdateMetadataDate(config.Path, config.Regexp, config.UpdateMetadataDateConfig)
 	fmt.Println("[Finish] UpdateMetadata")
 }
 
-func processUpdateMetadataDate(basePath string, config config.UpdateMetadataConfig) {
+func processUpdateMetadataDate(basePath string, regexpStr string, config config.UpdateMetadataConfig) {
 	valueStr := config.Date
 	override := config.Override
 	var fileDateTime *time.Time
@@ -33,7 +35,7 @@ func processUpdateMetadataDate(basePath string, config config.UpdateMetadataConf
 		fileDateTime = &k
 	}
 	replaces := make(map[string]string)
-	for _, replace := range config.Replace {
+	for _, replace := range config.DateReplaces {
 		replaces[replace.Day] = replace.NewDay
 	}
 
@@ -42,7 +44,15 @@ func processUpdateMetadataDate(basePath string, config config.UpdateMetadataConf
 			if err != nil {
 				return err
 			}
-			metadata.UpdateMetadataDate(path, info, fileDateTime, override, replaces)
+			process := true
+			if regexpStr != "" {
+				process, _ = regexp.MatchString(regexpStr, info.Name())
+			}
+
+			if process {
+				metadata.UpdateMetadataDate(path, info, fileDateTime, override, replaces)
+			}
+
 			return nil
 		})
 }

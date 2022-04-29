@@ -90,6 +90,7 @@ func (u Uploader) UploadFile(filepath string, albumId string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	gMediaItem, err := u.client.MediaItems.CreateToAlbum(u.ctx, albumId, media_items.SimpleMediaItem{UploadToken: gToken})
 	if err != nil {
 		return "", err

@@ -38,13 +38,14 @@ func (a *Action) UnmarshalYAML(value *yaml.Node) error {
 type Config struct {
 	Action                   Action               `yaml:"action" `
 	Path                     string               `yaml:"path"`
+	Regexp                   string               `yaml:"regexp"`
 	UpdateMetadataDateConfig UpdateMetadataConfig `yaml:"update_metadata_config"`
 }
 
 type UpdateMetadataConfig struct {
-	Date     string                            `yaml:"date"`
-	Override bool                              `yaml:"override"`
-	Replace  []UpdateMetadataDateConfigReplace `yaml:"replace"`
+	Date         string                            `yaml:"date"`
+	Override     bool                              `yaml:"override"`
+	DateReplaces []UpdateMetadataDateConfigReplace `yaml:"date_replaces"`
 }
 type UpdateMetadataDateConfigReplace struct {
 	Day    string `yaml:"day"`

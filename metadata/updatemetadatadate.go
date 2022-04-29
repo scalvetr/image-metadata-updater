@@ -19,7 +19,17 @@ func UpdateMetadataDate(path string, info os.FileInfo, fileDateTime *time.Time, 
 	}
 }
 func updateMetadataDateMpeg(filepath string, fileDateTime *time.Time, override bool, replaces map[string]string) {
+	fmt.Println("    - file: ", filepath)
+	fileInfo, err := os.Stat(filepath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var existingFileDateTime = fileInfo.ModTime()
+	fmt.Println("      existingDateTime: ", existingFileDateTime)
+	fileDateTime, override = processReplaces(&existingFileDateTime, replaces)
 
+	fmt.Println("      set - newDateTime: ", fileDateTime)
+	os.Chtimes(filepath, *fileDateTime, *fileDateTime)
 }
 
 func updateMetadataDateJpg(filepath string, fileDateTime *time.Time, override bool, replaces map[string]string) {

@@ -59,8 +59,10 @@ func extractExifMetadataDate(filepath string) *time.Time {
 	metadata := extractExifMetadata(filepath)
 	var fileDateTime *time.Time
 	layout := "2006:01:02 15:04:05 -07"
+	fmt.Println("      metadata:")
 	for _, ifdEntry := range metadata {
-		fmt.Println(ifdEntry.TagName, ifdEntry.Value)
+
+		fmt.Println("        ", ifdEntry.TagName, ifdEntry.Value)
 		valueStr, _ := ifdEntry.Value.(string)
 
 		if ifdEntry.TagName == "DateTime" {
