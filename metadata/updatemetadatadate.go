@@ -20,23 +20,22 @@ func UpdateMetadataDate(path string, info os.FileInfo, fileDateTime *time.Time, 
 }
 func updateMetadataDateMpeg(filepath string, fileDateTime *time.Time, override bool, replaces map[string]string) {
 	fmt.Println("    - file: ", filepath)
-	fileInfo, err := os.Stat(filepath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var existingFileDateTime = fileInfo.ModTime()
-	var newDate = getNewDate(&existingFileDateTime, fileDateTime, override, replaces)
+	var existingFileDateTime = getModTime(filepath)
+	var newDate = getNewDate(existingFileDateTime, fileDateTime, override, replaces)
 	if newDate != nil {
 		os.Chtimes(filepath, *newDate, *newDate)
 	}
 }
-
 func updateMetadataDateJpg(filepath string, fileDateTime *time.Time, override bool, replaces map[string]string) {
 	fmt.Println("    - file: ", filepath)
 	var existingFileDateTime = extractExifMetadataDate(filepath)
 	var newDate = getNewDate(existingFileDateTime, fileDateTime, override, replaces)
+	if newDate == nil && override {
+		newDate = getModTime(filepath)
+	}
+
 	if newDate != nil {
-		setExifMetadataDate(filepath, *fileDateTime)
+		setExifMetadataDate(filepath, *newDate)
 	}
 }
 func getNewDate(existingFileDateTime *time.Time, fileDateTime *time.Time, override bool, replaces map[string]string) *time.Time {
@@ -58,6 +57,15 @@ func getNewDate(existingFileDateTime *time.Time, fileDateTime *time.Time, overri
 	}
 	fmt.Println("      keep - existingDateTime")
 	return nil
+}
+
+func getModTime(filepath string) *time.Time {
+	fileInfo, err := os.Stat(filepath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	result := fileInfo.ModTime()
+	return &result
 }
 
 func processReplaces(dateTime *time.Time, replaces map[string]string) (*time.Time, bool) {
