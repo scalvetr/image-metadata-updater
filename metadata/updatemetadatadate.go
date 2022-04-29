@@ -25,26 +25,39 @@ func updateMetadataDateMpeg(filepath string, fileDateTime *time.Time, override b
 		log.Fatal(err)
 	}
 	var existingFileDateTime = fileInfo.ModTime()
-	fmt.Println("      existingDateTime: ", existingFileDateTime)
-	fileDateTime, override = processReplaces(&existingFileDateTime, replaces)
-
-	fmt.Println("      set - newDateTime: ", fileDateTime)
-	os.Chtimes(filepath, *fileDateTime, *fileDateTime)
+	var newDate = getNewDate(&existingFileDateTime, fileDateTime, override, replaces)
+	if newDate != nil {
+		os.Chtimes(filepath, *newDate, *newDate)
+	}
 }
 
 func updateMetadataDateJpg(filepath string, fileDateTime *time.Time, override bool, replaces map[string]string) {
 	fmt.Println("    - file: ", filepath)
 	var existingFileDateTime = extractExifMetadataDate(filepath)
+	var newDate = getNewDate(existingFileDateTime, fileDateTime, override, replaces)
+	if newDate != nil {
+		setExifMetadataDate(filepath, *fileDateTime)
+	}
+}
+func getNewDate(existingFileDateTime *time.Time, fileDateTime *time.Time, override bool, replaces map[string]string) *time.Time {
+	// existing metadata
 	if existingFileDateTime != nil {
 		fmt.Println("      existingDateTime: ", existingFileDateTime)
-		fileDateTime, override = processReplaces(existingFileDateTime, replaces)
-	}
-	if existingFileDateTime == nil || override {
-		fmt.Println("      set - newDateTime: ", fileDateTime)
-		setExifMetadataDate(filepath, *fileDateTime)
 	} else {
-		fmt.Println("      keep - existingDateTime")
+		return fileDateTime
 	}
+
+	if fileDateTime != nil && override {
+		fmt.Println("      set - newDateTime: ", fileDateTime)
+		return fileDateTime
+	}
+
+	if existingFileDateTime, override = processReplaces(existingFileDateTime, replaces); override {
+		fmt.Println("      set - newDateTime: ", existingFileDateTime)
+		return existingFileDateTime
+	}
+	fmt.Println("      keep - existingDateTime")
+	return nil
 }
 
 func processReplaces(dateTime *time.Time, replaces map[string]string) (*time.Time, bool) {
