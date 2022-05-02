@@ -1,33 +1,61 @@
-package config
+package album
 
 import (
-	"fmt"
+	"bytes"
 	"io/fs"
-	"strings"
+	"log"
+	c "photo-manager-cli/config"
+	"regexp"
+	"strconv"
+	"text/template"
 )
 
 type AlbumInfo struct {
 	Name  string
-	Year  string
-	Month string
+	Year  int
+	Month int
 }
 
-func (a AlbumInfo) GetName() string {
-	return fmt.Sprintf("%s-%s - %s", a.Year, a.Month, a.Name)
+func (a AlbumInfo) GetName(config c.AlbumInfoConfig) string {
+	albumNamePattern := config.GetAlbumNamePattern()
+
+	albumNameTemplate := template.Must(template.New("albumNameTemplate").Parse(albumNamePattern))
+
+	var tpl bytes.Buffer
+	if err := albumNameTemplate.Execute(&tpl, a); err != nil {
+		log.Fatal(err)
+	}
+	return tpl.String()
 }
-func ExtractAlbumInfo(directory fs.FileInfo) AlbumInfo {
-	name := directory.Name()
-	nameArr := strings.Split(name, "-")
-	year := name[:4]
-	month := name[7:9]
-	if month[0] != '0' && month[0] != '1' {
-		month = "01"
+
+func ExtractAlbumInfo(directory fs.FileInfo, config c.AlbumInfoConfig) AlbumInfo {
+	folderRegexp := config.FolderRegexp
+	if folderRegexp == "" {
+		folderRegexp = `(?P<year>\d{4}) - (?P<month>\d{2})(.*) - (?P<name>.*)`
+	}
+	pattern := regexp.MustCompile(folderRegexp)
+	matches := pattern.FindStringSubmatch(directory.Name())
+	result := make(map[string]string)
+	for i, name := range pattern.SubexpNames() {
+		if i != 0 && name != "" {
+			result[name] = matches[i]
+		}
 	}
 
+	var err error
+	year, err := strconv.Atoi(result["year"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	month, err := strconv.Atoi(result["month"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	name := result["name"]
+
 	return AlbumInfo{
-		Name:  strings.TrimSpace(nameArr[len(nameArr)-1]),
+		Name:  name,
 		Year:  year,
 		Month: month,
 	}
-
 }

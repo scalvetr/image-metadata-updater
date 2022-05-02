@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	a "photo-manager-cli/album"
 	c "photo-manager-cli/config"
-	u "photo-manager-cli/uploader"
+	"photo-manager-cli/metadata"
 )
 
-func UploadAlbums(config c.Config) {
-	fmt.Println("[INIT] UploadAlbums")
+func FixDateAlbums(config c.Config) {
+	fmt.Println("[INIT] FixDateAlbums")
 	fmt.Println("path: ", config.Path)
 	fmt.Println("albumNamePattern: ", config.AlbumInfoConfig.GetAlbumNamePattern())
 	fmt.Println("getFolderRegexp: ", config.AlbumInfoConfig.GetFolderRegexp())
@@ -30,31 +30,22 @@ func UploadAlbums(config c.Config) {
 		}
 	}
 
-	u, err := u.CreateUploader(config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	for _, directory := range directories {
 		var info = a.ExtractAlbumInfo(directory, config.AlbumInfoConfig)
-		fmt.Println(info.Year, info.Month, info.Name)
-		uploadAlbum(config.Path, directory, info, *u)
+		fmt.Println("[FixDateAlbums] - ", info.Year, info.Month, info.Name)
+		fixDate(config.Path, directory, info)
 	}
-	fmt.Println("[Finish] UploadAlbums")
+	fmt.Println("[Finish] FixDateAlbums")
 }
 
-func uploadAlbum(basePath string, directory fs.FileInfo, albumInfo a.AlbumInfo, uploader u.Uploader) {
-	albumId, err := uploader.CreateAlbum(albumInfo)
-	if err != nil {
-		log.Fatal(err)
-	}
+func fixDate(basePath string, directory fs.FileInfo, albumInfo a.AlbumInfo) {
 	filepath.Walk(filepath.Join(basePath, directory.Name()),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
 			if !info.IsDir() {
-				uploader.UploadFile(path, albumId)
+				metadata.FixDate(path, albumInfo.Year, albumInfo.Month)
 			}
 			return nil
 		})

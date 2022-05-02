@@ -76,7 +76,7 @@ func (u *Uploader) init(config c.Config) error {
 func (u Uploader) CreateAlbum(album a.AlbumInfo) (string, error) {
 	fmt.Println("[GOOGLE_PHOTO] Album: ", album.Year, album.Month, album.Name)
 
-	gAlbum, err := u.client.Albums.Create(u.ctx, album.GetName())
+	gAlbum, err := u.client.Albums.Create(u.ctx, album.GetName(u.config.AlbumInfoConfig))
 	if err != nil {
 		return "", err
 	}

@@ -12,6 +12,7 @@ const (
 	UpdateDateFromMetadata
 	UpdateMetadata
 	UploadAlbums
+	FixDateAlbums
 )
 
 var ActionFromString = map[string]Action{
@@ -19,6 +20,7 @@ var ActionFromString = map[string]Action{
 	"UPDATE_DATE_FROM_METADATA": UpdateDateFromMetadata,
 	"UPDATE_METADATA":           UpdateMetadata,
 	"UPLOAD_ALBUMS":             UploadAlbums,
+	"FIX_DATE_ALBUMS":           FixDateAlbums,
 }
 
 func (a *Action) UnmarshalYAML(value *yaml.Node) error {
@@ -40,6 +42,26 @@ type Config struct {
 	Path                     string               `yaml:"path"`
 	Regexp                   string               `yaml:"regexp"`
 	UpdateMetadataDateConfig UpdateMetadataConfig `yaml:"update_metadata_config"`
+	AlbumInfoConfig          AlbumInfoConfig      `yaml:"album_info_config"`
+}
+
+type AlbumInfoConfig struct {
+	FolderRegexp     string `yaml:"folder_regexp"`
+	AlbumNamePattern string `yaml:"album_name_pattern"`
+}
+
+func (c AlbumInfoConfig) GetFolderRegexp() string {
+	if c.FolderRegexp == "" {
+		return `(?<year>\d{4}) - (?<month>\d{2})(.*) - (?<name>.*)`
+	}
+	return c.FolderRegexp
+
+}
+func (c AlbumInfoConfig) GetAlbumNamePattern() string {
+	if c.AlbumNamePattern == "" {
+		return `{{printf "%04d" .Year}}-{{printf "%02d" .Month}} - {{.Name}}`
+	}
+	return c.AlbumNamePattern
 }
 
 type UpdateMetadataConfig struct {

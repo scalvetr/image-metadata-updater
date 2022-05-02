@@ -33,6 +33,8 @@ func main() {
 			a.UpdateMetadataDate(config)
 		} else if config.Action == c.UploadAlbums {
 			a.UploadAlbums(config)
+		} else if config.Action == c.FixDateAlbums {
+			a.FixDateAlbums(config)
 		}
 	}
 	fmt.Println("------------------------------")
