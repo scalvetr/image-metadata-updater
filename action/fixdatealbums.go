@@ -32,7 +32,7 @@ func FixDateAlbums(config c.Config) {
 
 	for _, directory := range directories {
 		var info = a.ExtractAlbumInfo(directory, config.AlbumInfoConfig)
-		fmt.Println("[FixDateAlbums] - ", info.Year, info.Month, info.Name)
+		fmt.Println("[FixDateAlbums] - ", info.GetName(config.AlbumInfoConfig))
 		fixDate(config.Path, directory, info)
 	}
 	fmt.Println("[Finish] FixDateAlbums")
