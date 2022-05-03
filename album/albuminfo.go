@@ -29,10 +29,7 @@ func (a AlbumInfo) GetName(config c.AlbumInfoConfig) string {
 }
 
 func ExtractAlbumInfo(directory fs.FileInfo, config c.AlbumInfoConfig) AlbumInfo {
-	folderRegexp := config.FolderRegexp
-	if folderRegexp == "" {
-		folderRegexp = `(?P<year>\d{4}) - (?P<month>\d{2})(.*) - (?P<name>.*)`
-	}
+	folderRegexp := config.GetFolderRegexp()
 	pattern := regexp.MustCompile(folderRegexp)
 	matches := pattern.FindStringSubmatch(directory.Name())
 	result := make(map[string]string)

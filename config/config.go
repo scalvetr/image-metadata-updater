@@ -42,6 +42,7 @@ type Config struct {
 	Path                     string               `yaml:"path"`
 	Regexp                   string               `yaml:"regexp"`
 	UpdateMetadataDateConfig UpdateMetadataConfig `yaml:"update_metadata_config"`
+	FixDateAlbumConfig       FixDateAlbumConfig   `yaml:"fix_date_album_config"`
 	AlbumInfoConfig          AlbumInfoConfig      `yaml:"album_info_config"`
 }
 
@@ -49,10 +50,21 @@ type AlbumInfoConfig struct {
 	FolderRegexp     string `yaml:"folder_regexp"`
 	AlbumNamePattern string `yaml:"album_name_pattern"`
 }
+type FixDateAlbumConfig struct {
+	ReportFile string `yaml:"report_file"`
+	DryRun     bool   `yaml:"dry_run"`
+}
 
+func (c FixDateAlbumConfig) GetReportFile() string {
+	if c.ReportFile == "" {
+		return "tmp.txt"
+	}
+	return c.ReportFile
+
+}
 func (c AlbumInfoConfig) GetFolderRegexp() string {
 	if c.FolderRegexp == "" {
-		return `(?<year>\d{4}) - (?<month>\d{2})(.*) - (?<name>.*)`
+		return `(?P<year>\d{4}) - (?P<month>\d{2})(.*) - (?P<name>.*)`
 	}
 	return c.FolderRegexp
 
