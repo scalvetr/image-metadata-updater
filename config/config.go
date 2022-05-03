@@ -12,7 +12,7 @@ const (
 	UpdateDateFromMetadata
 	UpdateMetadata
 	UploadAlbums
-	FixDateAlbums
+	CheckAlbumDateMismatch
 )
 
 var ActionFromString = map[string]Action{
@@ -20,7 +20,7 @@ var ActionFromString = map[string]Action{
 	"UPDATE_DATE_FROM_METADATA": UpdateDateFromMetadata,
 	"UPDATE_METADATA":           UpdateMetadata,
 	"UPLOAD_ALBUMS":             UploadAlbums,
-	"FIX_DATE_ALBUMS":           FixDateAlbums,
+	"CHECK_ALBUM_DATE_MISMATCH": CheckAlbumDateMismatch,
 }
 
 func (a *Action) UnmarshalYAML(value *yaml.Node) error {
@@ -38,30 +38,22 @@ func (a *Action) UnmarshalYAML(value *yaml.Node) error {
 }
 
 type Config struct {
-	Action                   Action               `yaml:"action" `
-	Path                     string               `yaml:"path"`
-	Regexp                   string               `yaml:"regexp"`
-	UpdateMetadataDateConfig UpdateMetadataConfig `yaml:"update_metadata_config"`
-	FixDateAlbumConfig       FixDateAlbumConfig   `yaml:"fix_date_album_config"`
-	AlbumInfoConfig          AlbumInfoConfig      `yaml:"album_info_config"`
+	Action                       Action                       `yaml:"action" `
+	Path                         string                       `yaml:"path"`
+	Regexp                       string                       `yaml:"regexp"`
+	UpdateMetadataDateConfig     UpdateMetadataConfig         `yaml:"update_metadata_config"`
+	CheckAlbumDateMismatchConfig CheckAlbumDateMismatchConfig `yaml:"check_album_date_mismatch_config"`
+	AlbumInfoConfig              AlbumInfoConfig              `yaml:"album_info_config"`
 }
 
 type AlbumInfoConfig struct {
 	FolderRegexp     string `yaml:"folder_regexp"`
 	AlbumNamePattern string `yaml:"album_name_pattern"`
 }
-type FixDateAlbumConfig struct {
+type CheckAlbumDateMismatchConfig struct {
 	ReportFile string `yaml:"report_file"`
-	DryRun     bool   `yaml:"dry_run"`
 }
 
-func (c FixDateAlbumConfig) GetReportFile() string {
-	if c.ReportFile == "" {
-		return "tmp.txt"
-	}
-	return c.ReportFile
-
-}
 func (c AlbumInfoConfig) GetFolderRegexp() string {
 	if c.FolderRegexp == "" {
 		return `(?P<year>\d{4}) - (?P<month>\d{2})(.*) - (?P<name>.*)`
@@ -77,10 +69,12 @@ func (c AlbumInfoConfig) GetAlbumNamePattern() string {
 }
 
 type UpdateMetadataConfig struct {
-	Date         string                            `yaml:"date"`
-	Override     bool                              `yaml:"override"`
-	DateReplaces []UpdateMetadataDateConfigReplace `yaml:"date_replaces"`
+	Override         bool                              `yaml:"override"` // keep if there is one date
+	Date             string                            `yaml:"date"`
+	DateReplaces     []UpdateMetadataDateConfigReplace `yaml:"date_replaces"`
+	DateFilePatterns []string                          `yaml:"date_file_patterns"`
 }
+
 type UpdateMetadataDateConfigReplace struct {
 	Day    string `yaml:"day"`
 	NewDay string `yaml:"new_day"`

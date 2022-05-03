@@ -14,8 +14,8 @@ import (
 	"time"
 )
 
-func FixDateAlbums(config c.Config) {
-	fmt.Println("[INIT] FixDateAlbums")
+func CheckAlbumDateMismatch(config c.Config) {
+	fmt.Println("[INIT] CheckAlbumDateMismatch")
 	fmt.Println("path: ", config.Path)
 	fmt.Println("albumNamePattern: ", config.AlbumInfoConfig.GetAlbumNamePattern())
 	fmt.Println("getFolderRegexp: ", config.AlbumInfoConfig.GetFolderRegexp())
@@ -33,9 +33,9 @@ func FixDateAlbums(config c.Config) {
 	}
 
 	var w *bufio.Writer
-	if config.FixDateAlbumConfig.ReportFile != "" {
+	if config.CheckAlbumDateMismatchConfig.ReportFile != "" {
 		var f *os.File
-		f, err = os.Create(config.FixDateAlbumConfig.ReportFile)
+		f, err = os.Create(config.CheckAlbumDateMismatchConfig.ReportFile)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -44,10 +44,10 @@ func FixDateAlbums(config c.Config) {
 
 	for _, directory := range directories {
 		var info = a.ExtractAlbumInfo(directory, config.AlbumInfoConfig)
-		fmt.Println("[FixDateAlbums] - ", info.GetName(config.AlbumInfoConfig))
+		fmt.Println("[CheckAlbumDateMismatch] - ", info.GetName(config.AlbumInfoConfig))
 		fixDate(config.Path, directory, info, w)
 	}
-	fmt.Println("[Finish] FixDateAlbums")
+	fmt.Println("[Finish] CheckAlbumDateMismatch")
 }
 
 func fixDate(basePath string, directory fs.FileInfo, albumInfo a.AlbumInfo, w *bufio.Writer) {
