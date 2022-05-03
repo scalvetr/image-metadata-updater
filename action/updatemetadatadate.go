@@ -50,7 +50,7 @@ func processUpdateMetadataDate(basePath string, regexpStr string, config config.
 			}
 
 			if process {
-				metadata.UpdateMetadataDate(path, info, fileDateTime, override, replaces)
+				metadata.UpdateMetadataDate(path, info, fileDateTime, override, replaces, config.DateFilePatterns)
 			}
 
 			return nil
