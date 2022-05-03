@@ -25,14 +25,14 @@ func UpdateMetadataDate(config config.Config) {
 func processUpdateMetadataDate(basePath string, regexpStr string, config config.UpdateMetadataConfig) {
 	valueStr := config.Date
 	override := config.Override
-	var fileDateTime *time.Time
+	var defaultDate *time.Time
 	if valueStr != "" {
 		layout := "2006-01-02T15:04:05Z07:00"
 		k, err := time.Parse(layout, valueStr)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fileDateTime = &k
+		defaultDate = &k
 	}
 	replaces := make(map[string]string)
 	for _, replace := range config.DateReplaces {
@@ -50,7 +50,7 @@ func processUpdateMetadataDate(basePath string, regexpStr string, config config.
 			}
 
 			if process {
-				metadata.UpdateMetadataDate(path, info, fileDateTime, override, replaces, config.DateFilePatterns)
+				metadata.UpdateMetadataDate(path, info, defaultDate, override, config.FileDate, replaces, config.DateFilePatterns)
 			}
 
 			return nil

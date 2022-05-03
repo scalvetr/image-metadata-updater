@@ -4,32 +4,41 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
 
-func UpdateMetadataDate(path string, info os.FileInfo, fileDateTime *time.Time, override bool, replaces map[string]string, dateFilePatterns []string) {
-	if !info.IsDir() && strings.HasSuffix(strings.ToLower(path), ".jpg") ||
-		strings.HasSuffix(strings.ToLower(path), ".jpeg") ||
-		strings.HasSuffix(strings.ToLower(path), ".gif") {
-		updateMetadataDateJpg(path, fileDateTime, override, replaces, dateFilePatterns)
-	} else if !info.IsDir() && strings.HasSuffix(strings.ToLower(path), ".mpg") ||
-		strings.HasSuffix(strings.ToLower(path), ".mpeg") {
-		updateMetadataDateMpeg(path, fileDateTime, override, replaces, dateFilePatterns)
+func UpdateMetadataDate(filePath string, info os.FileInfo, defaultDate *time.Time, override bool, fileDate bool, replaces map[string]string, dateFilePatterns []string) {
+	if !info.IsDir() && strings.HasSuffix(strings.ToLower(filePath), ".jpg") ||
+		strings.HasSuffix(strings.ToLower(filePath), ".jpeg") ||
+		strings.HasSuffix(strings.ToLower(filePath), ".gif") {
+		updateMetadataDateJpg(filePath, defaultDate, override, fileDate, replaces, dateFilePatterns)
+	} else if !info.IsDir() && strings.HasSuffix(strings.ToLower(filePath), ".mpg") ||
+		strings.HasSuffix(strings.ToLower(filePath), ".mpeg") ||
+		strings.HasSuffix(strings.ToLower(filePath), ".mp4") {
+		updateMetadataDateMpeg(filePath, defaultDate, override, fileDate, replaces, dateFilePatterns)
 	}
 }
-func updateMetadataDateMpeg(filePath string, fileDateTime *time.Time, override bool, replaces map[string]string, dateFilePatterns []string) {
+func updateMetadataDateMpeg(filePath string, defaultDate *time.Time, override bool, fileDate bool, replaces map[string]string, dateFilePatterns []string) {
 	fmt.Println("    - file: ", filePath)
+	if fileDate {
+		defaultDate = getModTime(filePath)
+	}
 	var existingFileDateTime = getModTime(filePath)
-	var newDate = getNewDate(filePath, existingFileDateTime, fileDateTime, override, replaces, dateFilePatterns)
+	var newDate = getNewDate(filePath, existingFileDateTime, defaultDate, override, replaces, dateFilePatterns)
 	if newDate != nil {
 		os.Chtimes(filePath, *newDate, *newDate)
 	}
 }
-func updateMetadataDateJpg(filePath string, fileDateTime *time.Time, override bool, replaces map[string]string, dateFilePatterns []string) {
+func updateMetadataDateJpg(filePath string, defaultDate *time.Time, override bool, fileDate bool, replaces map[string]string, dateFilePatterns []string) {
 	fmt.Println("    - file: ", filePath)
+	if fileDate {
+		defaultDate = getModTime(filePath)
+	}
 	var existingFileDateTime = extractExifMetadataDate(filePath)
-	var newDate = getNewDate(filePath, existingFileDateTime, fileDateTime, override, replaces, dateFilePatterns)
+	var newDate = getNewDate(filePath, existingFileDateTime, defaultDate, override, replaces, dateFilePatterns)
 	if newDate == nil && override {
 		newDate = getModTime(filePath)
 	}
@@ -41,7 +50,7 @@ func updateMetadataDateJpg(filePath string, fileDateTime *time.Time, override bo
 func getNewDate(
 	fileName string,
 	existingFileDateTime *time.Time,
-	fileDateTime *time.Time,
+	defaultDate *time.Time,
 	override bool,
 	replaces map[string]string,
 	dateFilePatterns []string,
@@ -71,9 +80,9 @@ func getNewDate(
 		return result
 	}
 
-	if fileDateTime != nil {
-		fmt.Println("      set - newDateTime (fixed): ", fileDateTime)
-		return fileDateTime
+	if defaultDate != nil {
+		fmt.Println("      set - newDateTime (fixed): ", defaultDate)
+		return defaultDate
 	}
 
 	fmt.Println("      keep - existingDateTime")
@@ -81,6 +90,53 @@ func getNewDate(
 }
 
 func processDateFilePatterns(fileName string, patterns []string) (*time.Time, bool) {
+	loc, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		loc = time.Local
+	}
+	for _, pattern := range patterns {
+		pattern := regexp.MustCompile(pattern)
+		if pattern.MatchString(fileName) {
+			matches := pattern.FindStringSubmatch(fileName)
+			result := make(map[string]string)
+			for i, name := range pattern.SubexpNames() {
+				if i != 0 && name != "" {
+					result[name] = matches[i]
+				}
+			}
+			var err error
+			year, err := strconv.Atoi(result["year"])
+			if err != nil {
+				log.Fatal(err)
+			}
+			month, err := strconv.Atoi(result["month"])
+			if err != nil {
+				log.Fatal(err)
+			}
+			day, err := strconv.Atoi(result["day"])
+			if err != nil {
+				log.Fatal(err)
+			}
+			hour, err := strconv.Atoi(result["hour"])
+			if err != nil {
+				log.Println(err)
+				hour = 00
+			}
+			minute, err := strconv.Atoi(result["minute"])
+			if err != nil {
+				log.Println(err)
+				minute = 01
+			}
+			second, err := strconv.Atoi(result["second"])
+			if err != nil {
+				log.Println(err)
+				second = 01
+			}
+
+			returnDate := time.Date(year, time.Month(month), day, hour, minute, second, 00, loc)
+			return &returnDate, true
+		}
+	}
 	return nil, false
 }
 

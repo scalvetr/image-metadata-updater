@@ -60,7 +60,7 @@ func fixDate(basePath string, directory fs.FileInfo, albumInfo a.AlbumInfo, w *b
 				return err
 			}
 			if !info.IsDir() {
-				metadata.FixDate(path, albumInfo.Year, albumInfo.Month,
+				metadata.CheckAlbumDateMismatch(path, albumInfo.Year, albumInfo.Month,
 					func(filePath string, fileDate *time.Time) {
 						if w != nil {
 							w.WriteString(fmt.Sprintf("  - file: %s\n    date: %v\n", filePath, fileDate))

@@ -70,6 +70,7 @@ func (c AlbumInfoConfig) GetAlbumNamePattern() string {
 
 type UpdateMetadataConfig struct {
 	Override         bool                              `yaml:"override"` // keep if there is one date
+	FileDate         bool                              `yaml:"file_date"`
 	Date             string                            `yaml:"date"`
 	DateReplaces     []UpdateMetadataDateConfigReplace `yaml:"date_replaces"`
 	DateFilePatterns []string                          `yaml:"date_file_patterns"`
