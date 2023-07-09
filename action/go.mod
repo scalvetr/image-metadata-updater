@@ -1,6 +1,6 @@
 module photo-manager-cli/action
 
-go 1.18
+go 1.23
 
 require (
 	photo-manager-cli/album v0.0.0
