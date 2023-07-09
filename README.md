@@ -32,6 +32,20 @@ Create a configuration file:
   path: "/Users/scalvetr/Pictures/upload"
 - action: "UPLOAD_ALBUMS"
   path: "/Users/scalvetr/Pictures/upload"
+- action: "CHECK_ALBUM_DATE_MISMATCH"
+  path: "/Users/scalvetr/Pictures/upload"
+  report_file: "check_album_date_report.txt"
+  album_info:
+    folder_regexp: "(?P<year>\d{4}) - (?P<month>\d{2})(.*) - (?P<name>.*)"
+    album_name_pattern: {{printf "%04d" .Year}}-{{printf "%02d" .Month}} - {{.Name}}
+- action: "INCREASE_DATE"
+  path: "/Users/scalvetr/Pictures/upload"
+  increase_date_config:
+    date_range_from: "2015-01-01"
+    date_range_to: "2017-01-01"
+    increase_seconds: 215568000
+  
+
 ```
 
 Accepts 3 kind of actions:

@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"gopkg.in/yaml.v3"
+	"time"
 )
 
 type Action uint
@@ -13,6 +14,7 @@ const (
 	UpdateMetadata
 	UploadAlbums
 	CheckAlbumDateMismatch
+	IncreaseDate
 )
 
 var ActionFromString = map[string]Action{
@@ -21,6 +23,7 @@ var ActionFromString = map[string]Action{
 	"UPDATE_METADATA":           UpdateMetadata,
 	"UPLOAD_ALBUMS":             UploadAlbums,
 	"CHECK_ALBUM_DATE_MISMATCH": CheckAlbumDateMismatch,
+	"INCREASE_DATE":             IncreaseDate,
 }
 
 func (a *Action) UnmarshalYAML(value *yaml.Node) error {
@@ -38,20 +41,23 @@ func (a *Action) UnmarshalYAML(value *yaml.Node) error {
 }
 
 type Config struct {
-	Action                       Action                       `yaml:"action" `
-	Path                         string                       `yaml:"path"`
-	Regexp                       string                       `yaml:"regexp"`
-	UpdateMetadataDateConfig     UpdateMetadataConfig         `yaml:"update_metadata_config"`
-	CheckAlbumDateMismatchConfig CheckAlbumDateMismatchConfig `yaml:"check_album_date_mismatch_config"`
-	AlbumInfoConfig              AlbumInfoConfig              `yaml:"album_info_config"`
+	Action                   Action               `yaml:"action" `
+	Path                     string               `yaml:"path"`
+	Regexp                   string               `yaml:"regexp"`
+	ReportFile               string               `yaml:"report_file"`
+	UpdateMetadataDateConfig UpdateMetadataConfig `yaml:"update_metadata_config"`
+	AlbumInfoConfig          AlbumInfoConfig      `yaml:"album_info_config"`
+	IncreaseDateConfig       IncreaseDateConfig   `yaml:"increase_date_config"`
 }
 
 type AlbumInfoConfig struct {
 	FolderRegexp     string `yaml:"folder_regexp"`
 	AlbumNamePattern string `yaml:"album_name_pattern"`
 }
-type CheckAlbumDateMismatchConfig struct {
-	ReportFile string `yaml:"report_file"`
+type IncreaseDateConfig struct {
+	DateRangeFrom   time.Time `yaml:"date_range_from"`
+	DateRangeTo     time.Time `yaml:"date_range_to"`
+	IncreaseSeconds int       `yaml:"increase_seconds"`
 }
 
 func (c AlbumInfoConfig) GetFolderRegexp() string {

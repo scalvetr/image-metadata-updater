@@ -2,8 +2,8 @@ package album
 
 import (
 	"bytes"
-	"io/fs"
 	"log"
+	"os"
 	c "photo-manager-cli/config"
 	"regexp"
 	"strconv"
@@ -28,7 +28,7 @@ func (a AlbumInfo) GetName(config c.AlbumInfoConfig) string {
 	return tpl.String()
 }
 
-func ExtractAlbumInfo(directory fs.FileInfo, config c.AlbumInfoConfig) AlbumInfo {
+func ExtractAlbumInfo(directory os.DirEntry, config c.AlbumInfoConfig) AlbumInfo {
 	folderRegexp := config.GetFolderRegexp()
 	pattern := regexp.MustCompile(folderRegexp)
 	matches := pattern.FindStringSubmatch(directory.Name())

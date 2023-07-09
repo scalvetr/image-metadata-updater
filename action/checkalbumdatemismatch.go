@@ -3,8 +3,6 @@ package action
 import (
 	"bufio"
 	"fmt"
-	"io/fs"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -20,12 +18,12 @@ func CheckAlbumDateMismatch(config c.Config) {
 	fmt.Println("albumNamePattern: ", config.AlbumInfoConfig.GetAlbumNamePattern())
 	fmt.Println("getFolderRegexp: ", config.AlbumInfoConfig.GetFolderRegexp())
 
-	files, err := ioutil.ReadDir(config.Path)
+	files, err := os.ReadDir(config.Path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var directories []fs.FileInfo
+	var directories []os.DirEntry
 	for _, file := range files {
 		if file.IsDir() {
 			directories = append(directories, file)
@@ -33,9 +31,9 @@ func CheckAlbumDateMismatch(config c.Config) {
 	}
 
 	var w *bufio.Writer
-	if config.CheckAlbumDateMismatchConfig.ReportFile != "" {
+	if config.ReportFile != "" {
 		var f *os.File
-		f, err = os.Create(config.CheckAlbumDateMismatchConfig.ReportFile)
+		f, err = os.Create(config.ReportFile)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -50,7 +48,7 @@ func CheckAlbumDateMismatch(config c.Config) {
 	fmt.Println("[Finish] CheckAlbumDateMismatch")
 }
 
-func fixDate(basePath string, directory fs.FileInfo, albumInfo a.AlbumInfo, w *bufio.Writer) {
+func fixDate(basePath string, directory os.DirEntry, albumInfo a.AlbumInfo, w *bufio.Writer) {
 	if w != nil {
 		w.WriteString(fmt.Sprintf("- name: %s\n  year: %04d\n  month: %02d\n  mismatches:\n", albumInfo.Name, albumInfo.Year, albumInfo.Month))
 	}

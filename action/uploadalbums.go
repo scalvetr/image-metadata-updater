@@ -2,8 +2,6 @@ package action
 
 import (
 	"fmt"
-	"io/fs"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -18,12 +16,12 @@ func UploadAlbums(config c.Config) {
 	fmt.Println("albumNamePattern: ", config.AlbumInfoConfig.GetAlbumNamePattern())
 	fmt.Println("getFolderRegexp: ", config.AlbumInfoConfig.GetFolderRegexp())
 
-	files, err := ioutil.ReadDir(config.Path)
+	files, err := os.ReadDir(config.Path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var directories []fs.FileInfo
+	var directories []os.DirEntry
 	for _, file := range files {
 		if file.IsDir() {
 			directories = append(directories, file)
@@ -43,7 +41,7 @@ func UploadAlbums(config c.Config) {
 	fmt.Println("[Finish] UploadAlbums")
 }
 
-func uploadAlbum(basePath string, directory fs.FileInfo, albumInfo a.AlbumInfo, uploader u.Uploader) {
+func uploadAlbum(basePath string, directory os.DirEntry, albumInfo a.AlbumInfo, uploader u.Uploader) {
 	albumId, err := uploader.CreateAlbum(albumInfo)
 	if err != nil {
 		log.Fatal(err)
