@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	c "photo-manager-cli/config"
+	"photo-manager-cli/metadata"
 	"time"
 )
 
@@ -46,10 +47,10 @@ func increaseSeconds(basePath string, directory string, config c.IncreaseDateCon
 				if info.ModTime().After(config.DateRangeFrom) && info.ModTime().Before(config.DateRangeTo) {
 					newTime := info.ModTime().Add(time.Second * time.Duration(config.IncreaseSeconds))
 					fmt.Printf("   increase to %s\n", newTime)
+					metadata.UpdateMetadataDate(path, info, &newTime, true, false, nil, nil)
 					if err := os.Chtimes(path, newTime, newTime); err != nil {
 						log.Fatal(err)
 					}
-
 				}
 			}
 			return nil
